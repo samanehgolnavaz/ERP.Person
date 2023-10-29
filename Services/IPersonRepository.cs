@@ -2,10 +2,10 @@
 {
     public interface IPersonRepository
     {
-        ERP.Person.Models.Entities.Person GetPersonById(string  nationalId);
-        IEnumerable<ERP.Person.Models.Entities.Person> GetAllPeople();
-        void AddPerson(ERP.Person.Models.Entities.Person person);
-        void UpdatePerson(ERP.Person.Models.Entities.Person person);
-        void DeletePerson(Guid id);
+        Models.Entities.Person GetPersonById(string  nationalId, CancellationToken cancellationToken=default);
+        IEnumerable<Models.Entities.Person> GetAllPeople(CancellationToken cancellationToken=default);
+        void AddPerson(Models.Entities.Person person, CancellationToken cancellationToken = default);
+        void UpdatePerson(Models.Entities.Person person, CancellationToken cancellationToken=default);
+        void DeletePerson(Guid id, CancellationToken cancellationToken = default);
     }
 }

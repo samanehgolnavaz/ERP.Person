@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SignalR.Protocol;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace ERP.Person.Services
@@ -11,13 +12,13 @@ namespace ERP.Person.Services
             _dbContext = dbContext; 
         }
 
-        public void AddPerson(Models.Entities.Person person)
+        public void AddPerson(Models.Entities.Person person,CancellationToken cancellationToken = default)
         {
             _dbContext.People.Add(person);
             _dbContext.SaveChanges();
         }
 
-        public void DeletePerson(Guid id)
+        public void DeletePerson(Guid id, CancellationToken cancellationToken = default)
         {
             var person = _dbContext.People.Find(id);
             if (person != null)
@@ -27,17 +28,17 @@ namespace ERP.Person.Services
             }
         }
 
-        public IEnumerable<Models.Entities.Person> GetAllPeople()
+        public IEnumerable<Models.Entities.Person> GetAllPeople(CancellationToken cancellationToken = default)
         {
             return _dbContext.People.ToList();
         }
 
-        public Models.Entities.Person GetPersonById(string nationalId)
+        public Models.Entities.Person GetPersonById(string nationalId, CancellationToken cancellationToken = default)
         {
             return _dbContext.People.FirstOrDefault(p => p.NationalId == nationalId);
         }
 
-        public void UpdatePerson(Models.Entities.Person person)
+        public void UpdatePerson(Models.Entities.Person person, CancellationToken cancellationToken = default)
         {
             _dbContext.People.Update(person);
             _dbContext.SaveChanges();
