@@ -2,10 +2,10 @@
 {
     public interface IPersonRepository
     {
-        Models.Entities.Person GetPersonById(string  nationalId, CancellationToken cancellationToken=default);
-        IEnumerable<Models.Entities.Person> GetAllPeople(CancellationToken cancellationToken=default);
-        void AddPerson(Models.Entities.Person person, CancellationToken cancellationToken = default);
-        void UpdatePerson(Models.Entities.Person person, CancellationToken cancellationToken=default);
-        void DeletePerson(Guid id, CancellationToken cancellationToken = default);
+        Task<Models.Entities.Person>  GetPersonByIdAsync(string  nationalId, CancellationToken cancellationToken=default);
+        Task<IEnumerable<Models.Entities.Person>> GetAllPeopleAsync(CancellationToken cancellationToken=default);
+        Task<Models.Entities.Person> AddPersonAsync(Models.Entities.Person person, CancellationToken cancellationToken = default);
+        Task<Models.Entities.Person> UpdatePersonAsync(Models.Entities.Person person, CancellationToken cancellationToken=default);
+        Task<bool> DeletePersonAsync(string nationalId, CancellationToken cancellationToken = default);
     }
 }

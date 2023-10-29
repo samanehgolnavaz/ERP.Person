@@ -16,15 +16,15 @@ namespace ERP.Person.Controllers
         }
 
         [HttpGet]
-        public IActionResult GettAllPeople(CancellationToken cancellationToken)
+        public async  Task<IActionResult> GettAllPeopleAsync(CancellationToken cancellationToken)
         {
-            var persons = _personRepository.GetAllPeople();
+            var persons =await _personRepository.GetAllPeopleAsync();
             return Ok(persons);
         }
         [HttpGet("{nationalId}")]
-        public IActionResult GetPersonById(string nationalId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetPersonByIdAsync(string nationalId, CancellationToken cancellationToken)
         {
-            var person = _personRepository.GetPersonById(nationalId);
+            var person =await _personRepository.GetPersonByIdAsync(nationalId);
             if (person == null)
             {
                 return NotFound();
@@ -32,28 +32,34 @@ namespace ERP.Person.Controllers
             return Ok(person);
         }
         [HttpPost]
-        public IActionResult CreatePerson([FromBody]Models.Entities.Person person, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreatePersonAsync([FromBody]Models.Entities.Person person, CancellationToken cancellationToken)
         {
-            _personRepository.AddPerson(person);
-            return CreatedAtAction(nameof(GetPersonById), new { id = person.Id }, person);
+            await  _personRepository.AddPersonAsync(person);
+            return CreatedAtAction(nameof(GetPersonByIdAsync), new { id = person.Id }, person);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdatePerson(Guid id, [FromBody]Models.Entities.Person person, CancellationToken cancellationToken)
+        [HttpPut("{nationaId}")]
+        public async Task<IActionResult> UpdatePersonAsync(string nationalId, [FromBody]Models.Entities.Person person, CancellationToken cancellationToken)
         {
-            if (id != person.Id)
+            if (nationalId != person.NationalId)
             {
                 return BadRequest();
             }
-            _personRepository.UpdatePerson(person);
+            await _personRepository.UpdatePersonAsync(person);
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeletePerson(Guid id, CancellationToken cancellationToken)
+        [HttpDelete("{nationalId}")]
+        public async Task<IActionResult> DeletePerson(string nationalId, CancellationToken cancellationToken)
         {
-            _personRepository.DeletePerson(id);
-            return NoContent();
+            var result=await _personRepository.DeletePersonAsync(nationalId);
+            if (result)
+            {
+                return NoContent();
+
+            }
+            return NotFound();
+
         }
 
     }

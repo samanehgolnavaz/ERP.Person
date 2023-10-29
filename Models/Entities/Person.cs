@@ -1,10 +1,13 @@
-﻿namespace ERP.Person.Models.Entities
+﻿using System.Diagnostics.Eventing.Reader;
+
+namespace ERP.Person.Models.Entities
 {
     public class Person
     {
         public Person()
         {
             Id = new Guid();
+            Enable = true;
         }
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -16,5 +19,6 @@
         public string City { get; set; }
         public string Country { get; set; }
         public string Address { get; set; }
+        public bool Enable { get; set; }
     }
 }

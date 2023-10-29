@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR.Protocol;
+﻿using Azure;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -12,36 +13,45 @@ namespace ERP.Person.Services
             _dbContext = dbContext; 
         }
 
-        public void AddPerson(Models.Entities.Person person,CancellationToken cancellationToken = default)
+        public async Task<Models.Entities.Person> AddPersonAsync(Models.Entities.Person person,CancellationToken cancellationToken = default)
         {
-            _dbContext.People.Add(person);
-            _dbContext.SaveChanges();
+            var addPerson = (await _dbContext.People.AddAsync(person, cancellationToken)).Entity;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return addPerson;
         }
 
-        public void DeletePerson(Guid id, CancellationToken cancellationToken = default)
+        public async Task<bool> DeletePersonAsync(string nationalId, CancellationToken cancellationToken = default)
         {
-            var person = _dbContext.People.Find(id);
+            var id =await _dbContext.People.Where(n => n.NationalId==nationalId).Select(n =>n.Id).FirstOrDefaultAsync();
+            var person =await _dbContext.People.FindAsync(id);
             if (person != null)
             {
-                _dbContext.People.Remove(person);
+                person.Enable = false;
+                //_dbContext.People.Remove(person);
                 _dbContext.SaveChanges();
+                return true;
             }
+            return false;
         }
 
-        public IEnumerable<Models.Entities.Person> GetAllPeople(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Models.Entities.Person>> GetAllPeopleAsync(CancellationToken cancellationToken = default)
         {
-            return _dbContext.People.ToList();
+            return await _dbContext.People.Where(p => p.Enable==true).ToListAsync();
         }
 
-        public Models.Entities.Person GetPersonById(string nationalId, CancellationToken cancellationToken = default)
+        public async Task<Models.Entities.Person?> GetPersonByIdAsync(string nationalId, CancellationToken cancellationToken = default)
         {
-            return _dbContext.People.FirstOrDefault(p => p.NationalId == nationalId);
+            var findPerson= await _dbContext.People.FirstOrDefaultAsync(p => p.NationalId == nationalId && p.Enable == true);
+            return findPerson;
         }
 
-        public void UpdatePerson(Models.Entities.Person person, CancellationToken cancellationToken = default)
+        public async Task<Models.Entities.Person?> UpdatePersonAsync(Models.Entities.Person person, CancellationToken cancellationToken = default)
         {
-            _dbContext.People.Update(person);
-            _dbContext.SaveChanges();
+
+           var updatePerson=( _dbContext.People.Update(person)).Entity;
+           await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return updatePerson;
         }
     }
 }
