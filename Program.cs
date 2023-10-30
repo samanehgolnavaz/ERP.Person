@@ -1,8 +1,11 @@
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<PersonDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Database"));
@@ -27,5 +30,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+app.UseSwagger();
+app.UseSwaggerUI();
 app.Run();
