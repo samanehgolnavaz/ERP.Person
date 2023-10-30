@@ -7,7 +7,8 @@ namespace ERP.Person.Repository
         {
         }
 
-        public DbSet<ERP.Person.Models.Entities.Person> People { get; set; }  
+        public DbSet<Models.Entities.Person> People { get; set; }
+        public DbSet<ExceptionLog> ExceptionLogs => base.Set<ExceptionLog>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

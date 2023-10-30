@@ -1,6 +1,4 @@
 
-using ERP.Person.Abstraction;
-using ERP.Person.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
