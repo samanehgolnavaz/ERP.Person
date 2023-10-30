@@ -1,8 +1,4 @@
 ﻿
-using ERP.Person.Services;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
-
 namespace ERP.Person.Controllers
 {
     [Route("api/[controller]")]
@@ -38,14 +34,17 @@ namespace ERP.Person.Controllers
             return CreatedAtAction(nameof(GetPersonByIdAsync), new { id = person.Id }, person);
         }
 
-        [HttpPut("{nationaId}")]
+        [HttpPatch("{nationalId}")]
         public async Task<IActionResult> UpdatePersonAsync(string nationalId, [FromBody]Models.Entities.Person person, CancellationToken cancellationToken)
         {
-            if (nationalId != person.NationalId)
+            var findNationalId= await _personRepository.FindPersonAsync(nationalId);
+            if (!findNationalId)
             {
                 return BadRequest();
             }
-            await _personRepository.UpdatePersonAsync(person);
+           var reult= await _personRepository.UpdatePersonAsync(nationalId,person);
+            if (reult == null)
+                return NotFound();
             return NoContent();
         }
 

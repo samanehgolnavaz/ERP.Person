@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.Eventing.Reader;
+﻿
 
 namespace ERP.Person.Models.Entities
 {
@@ -10,9 +10,13 @@ namespace ERP.Person.Models.Entities
             Enable = true;
         }
         public Guid Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Family { get; set; }
         public bool   Gender { get; set; }
+        [Required]
+        [MaxLength(10)]
         public string NationalId { get; set; }
         public string Mobile { get; set; }
         public string Email { get; set; }

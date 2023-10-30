@@ -68,7 +68,7 @@ namespace ERP.Person.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("People");
+                    b.ToTable("People", (string)null);
                 });
 #pragma warning restore 612, 618
         }
