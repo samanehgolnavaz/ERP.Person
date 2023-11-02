@@ -1,13 +1,17 @@
 ﻿
 
+using ERP.Person.Services.Interfaces;
+
 namespace ERP.Person.Models.Entities
 {
     public class Person
     {
+        public readonly IGuidGenerator guidGenerator;
         public Person()
         {
-            Id = new Guid();
+            Id = Guid.NewGuid();
             Enable = true;
+            IsDeleted = false;
         }
         public Guid Id { get; set; }
         [Required]
@@ -24,5 +28,6 @@ namespace ERP.Person.Models.Entities
         public string Country { get; set; }
         public string Address { get; set; }
         public bool Enable { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

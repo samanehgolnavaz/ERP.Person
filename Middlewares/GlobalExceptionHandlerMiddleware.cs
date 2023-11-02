@@ -3,7 +3,7 @@
 
 namespace ERP.Person.Middlewares
 {
-    public class GlobalExceptionHandlerMiddleware
+    public class GlobalExceptionHandlerMiddleware :IMiddleware
     {
         private readonly ILogger<GlobalExceptionHandlerMiddleware> _logger;
         private readonly PersonDbContext _dbContext;

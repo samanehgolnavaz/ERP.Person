@@ -28,21 +28,35 @@ namespace ERP.Person.Controllers
             return Ok(person);
         }
         [HttpPost]
-        public async Task<IActionResult> CreatePersonAsync([FromBody]Models.Entities.Person person, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreatePersonAsync([FromBody]CreatePersonModel person, CancellationToken cancellationToken)
         {
-            await  _personRepository.AddPersonAsync(person);
-            return CreatedAtAction(nameof(GetPersonByIdAsync), new { id = person.Id }, person);
+            var createdPerson= await  _personRepository.AddPersonAsync(person);
+            return CreatedAtAction(nameof(GetPersonByIdAsync), new { id = createdPerson.Id }, person);
         }
 
-        [HttpPatch("{nationalId}")]
-        public async Task<IActionResult> UpdatePersonAsync(string nationalId, [FromBody]Models.Entities.Person person, CancellationToken cancellationToken)
+        [HttpPut("{nationalId}")]
+        public async Task<IActionResult> UpdatePersonAsync(string nationalId, [FromBody]UpdatePersonModel person, CancellationToken cancellationToken)
         {
             var findNationalId= await _personRepository.FindPersonAsync(nationalId);
             if (!findNationalId)
             {
                 return BadRequest();
             }
-           var reult= await _personRepository.UpdatePersonAsync(nationalId,person);
+            var reult = await _personRepository.UpdatePersonAsync(nationalId, person);
+            if (reult == null)
+                return NotFound();
+            return NoContent();
+        }
+
+        [HttpPatch("{nationalId}")]
+        public async Task<IActionResult> ChangePersonStatusAsync(string nationalId, [FromBody] PersonStatusModel person, CancellationToken cancellationToken)
+        {
+            var findNationalId = await _personRepository.FindPersonAsync(nationalId);
+            if (!findNationalId)
+            {
+                return BadRequest();
+            }
+            var reult = await _personRepository.ChangePersonStatusAsync(nationalId, person);
             if (reult == null)
                 return NotFound();
             return NoContent();
