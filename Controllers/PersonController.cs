@@ -1,26 +1,28 @@
 ﻿
+using ERP.Person.Services.Interfaces;
+
 namespace ERP.Person.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class PersonController : ControllerBase
     {
-        private readonly IPersonRepository _personRepository;
-        public PersonController(IPersonRepository personRepository)
+        private readonly IPersonService _personService;
+        public PersonController(IPersonService personService)
         {
-            _personRepository = personRepository;
+            _personService = personService;
         }
 
         [HttpGet]
         public async  Task<IActionResult> GettAllPeopleAsync(CancellationToken cancellationToken)
         {
-            var persons =await _personRepository.GetAllPeopleAsync();
+            var persons =await _personService.GetAllPeopleAsync();
             return Ok(persons);
         }
         [HttpGet("{nationalId}")]
         public async Task<IActionResult> GetPersonByIdAsync(string nationalId, CancellationToken cancellationToken)
         {
-            var person =await _personRepository.GetPersonByIdAsync(nationalId);
+            var person =await _personService.GetPersonByIdAsync(nationalId);
             if (person == null)
             {
                 return NotFound();
@@ -30,19 +32,19 @@ namespace ERP.Person.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePersonAsync([FromBody]CreatePersonModel person, CancellationToken cancellationToken)
         {
-            var createdPerson= await  _personRepository.AddPersonAsync(person);
+            var createdPerson= await _personService.AddPersonAsync(person);
             return CreatedAtAction(nameof(GetPersonByIdAsync), new { id = createdPerson.Id }, person);
         }
 
         [HttpPut("{nationalId}")]
         public async Task<IActionResult> UpdatePersonAsync(string nationalId, [FromBody]UpdatePersonModel person, CancellationToken cancellationToken)
         {
-            var findNationalId= await _personRepository.FindPersonAsync(nationalId);
+            var findNationalId= await _personService.FindPersonAsync(nationalId);
             if (!findNationalId)
             {
                 return BadRequest();
             }
-            var reult = await _personRepository.UpdatePersonAsync(nationalId, person);
+            var reult = await _personService.UpdatePersonAsync(nationalId, person);
             if (reult == null)
                 return NotFound();
             return NoContent();
@@ -51,12 +53,12 @@ namespace ERP.Person.Controllers
         [HttpPatch("{nationalId}")]
         public async Task<IActionResult> ChangePersonStatusAsync(string nationalId, [FromBody] PersonStatusModel person, CancellationToken cancellationToken)
         {
-            var findNationalId = await _personRepository.FindPersonAsync(nationalId);
+            var findNationalId = await _personService.FindPersonAsync(nationalId);
             if (!findNationalId)
             {
                 return BadRequest();
             }
-            var reult = await _personRepository.ChangePersonStatusAsync(nationalId, person);
+            var reult = await _personService.ChangePersonStatusAsync(nationalId, person);
             if (reult == null)
                 return NotFound();
             return NoContent();

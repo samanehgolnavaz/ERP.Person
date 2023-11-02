@@ -15,7 +15,6 @@ namespace ERP.Person.Persistence
             _guidGenerator = guidGenerator;
 
         }
-
         public async Task<Models.Entities.Person> AddPersonAsync(CreatePersonModel createPerson, CancellationToken cancellationToken = default)
         {
             var person=new Models.Entities.Person();
