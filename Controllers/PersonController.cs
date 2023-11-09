@@ -1,4 +1,5 @@
 ﻿
+using ERP.Person.Services.Implementation;
 using ERP.Person.Services.Interfaces;
 
 namespace ERP.Person.Controllers
@@ -8,9 +9,11 @@ namespace ERP.Person.Controllers
     public class PersonController : ControllerBase
     {
         private readonly IPersonService _personService;
-        public PersonController(IPersonService personService)
+        private readonly CodeValidation  _codeValidation;
+        public PersonController(IPersonService personService,CodeValidation codeValidation)
         {
             _personService = personService;
+            _codeValidation = codeValidation;
         }
 
         [HttpGet]
@@ -22,6 +25,10 @@ namespace ERP.Person.Controllers
         [HttpGet("{nationalId}")]
         public async Task<IActionResult> GetPersonByIdAsync(string nationalId, CancellationToken cancellationToken)
         {
+            if (!CodeValidation.IsValidNationaCode(nationalId))
+            {
+                return NotFound();
+            }
             var person =await _personService.GetPersonByIdAsync(nationalId);
             if (person == null)
             {
@@ -39,6 +46,10 @@ namespace ERP.Person.Controllers
         [HttpPut("{nationalId}")]
         public async Task<IActionResult> UpdatePersonAsync(string nationalId, [FromBody]UpdatePersonModel person, CancellationToken cancellationToken)
         {
+            if (!CodeValidation.IsValidNationaCode(nationalId))
+            {
+                return NotFound();
+            }
             var findNationalId= await _personService.FindPersonAsync(nationalId);
             if (!findNationalId)
             {
@@ -53,6 +64,10 @@ namespace ERP.Person.Controllers
         [HttpPatch("{nationalId}")]
         public async Task<IActionResult> ChangePersonStatusAsync(string nationalId, [FromBody] PersonStatusModel person, CancellationToken cancellationToken)
         {
+            if (!CodeValidation.IsValidNationaCode(nationalId))
+            {
+                return NotFound();
+            }
             var findNationalId = await _personService.FindPersonAsync(nationalId);
             if (!findNationalId)
             {
@@ -67,7 +82,11 @@ namespace ERP.Person.Controllers
         [HttpDelete("{nationalId}")]
         public async Task<IActionResult> DeletePerson(string nationalId, CancellationToken cancellationToken)
         {
-            var result=await _personRepository.DeletePersonAsync(nationalId);
+            if (!CodeValidation.IsValidNationaCode(nationalId))
+            {
+                return NotFound();
+            }
+            var result=await _personService.DeletePersonAsync(nationalId);
             if (result)
             {
                 return NoContent();
